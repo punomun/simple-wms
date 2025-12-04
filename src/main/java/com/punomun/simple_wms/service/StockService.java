@@ -1,5 +1,6 @@
 package com.punomun.simple_wms.service;
 
+import com.punomun.simple_wms.dto.StockResponse;
 import com.punomun.simple_wms.exception.ResourceNotFoundException;
 import com.punomun.simple_wms.model.Product;
 import com.punomun.simple_wms.model.Stock;
@@ -39,5 +40,19 @@ public class StockService {
         stock.setQuantity(stock.getQuantity() + quantity);
 
         stockRepository.save(stock);
+    }
+
+    public StockResponse getStock(String sku, Long warehouseId) {
+        Product product = productRepository.findBySku(sku)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with SKU: " + sku));
+
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found with ID: " + warehouseId));
+
+        Integer quantity = stockRepository.findByProductAndWarehouse(product, warehouse)
+                .map(Stock::getQuantity)
+                .orElse(0);
+
+        return new StockResponse(sku, warehouseId, quantity);
     }
 }

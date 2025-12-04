@@ -1,6 +1,7 @@
 package com.punomun.simple_wms.controller;
 
 import com.punomun.simple_wms.dto.AddStockRequest;
+import com.punomun.simple_wms.dto.StockResponse;
 import com.punomun.simple_wms.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,13 @@ public class StockController {
                 request.warehouseId(),
                 request.quantity()
         );
+    }
+
+    @GetMapping
+    public StockResponse getStock(
+            @RequestParam String sku,
+            @RequestParam Long warehouseId
+    ) {
+        return stockService.getStock(sku, warehouseId);
     }
 }
