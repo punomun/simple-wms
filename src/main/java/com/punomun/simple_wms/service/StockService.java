@@ -2,6 +2,7 @@ package com.punomun.simple_wms.service;
 
 import com.punomun.simple_wms.dto.StockResponse;
 import com.punomun.simple_wms.exception.ResourceNotFoundException;
+import com.punomun.simple_wms.exception.WarehouseFullException;
 import com.punomun.simple_wms.model.Product;
 import com.punomun.simple_wms.model.Stock;
 import com.punomun.simple_wms.model.Warehouse;
@@ -27,6 +28,15 @@ public class StockService {
 
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found with ID: " + warehouseId));
+
+        Integer currentStockLevel = stockRepository.getCurrentStockInWarehouse(warehouseId);
+        if (currentStockLevel + quantity > warehouse.getCapacity()) throw new WarehouseFullException(
+                String.format("Warehouse %s is full: Capacity: %d, Current: %d, Attempted: %d",
+                        warehouse.getName(),
+                        warehouse.getCapacity(),
+                        currentStockLevel,
+                        quantity)
+        );
 
         Stock stock = stockRepository.findByProductAndWarehouse(product, warehouse)
                 .orElse(new Stock());
