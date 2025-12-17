@@ -45,7 +45,7 @@ class StockServiceTest {
         warehouse.setCapacity(capacity);
 
         when(productRepository.findBySku(sku)).thenReturn(Optional.of(product));
-        when(warehouseRepository.findById(warehouseId)).thenReturn(Optional.of(warehouse));
+        when(warehouseRepository.findByIdWithLock(warehouseId)).thenReturn(Optional.of(warehouse));
         when(stockRepository.getCurrentStockInWarehouse(warehouseId)).thenReturn(currentStock);
 
         assertThrows(WarehouseFullException.class, () -> stockService.addStock(sku, warehouseId, quantityToAdd));

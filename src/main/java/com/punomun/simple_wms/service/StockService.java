@@ -26,7 +26,7 @@ public class StockService {
         Product product = productRepository.findBySku(sku)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with SKU: " + sku));
 
-        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+        Warehouse warehouse = warehouseRepository.findByIdWithLock(warehouseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found with ID: " + warehouseId));
 
         Integer currentStockLevel = stockRepository.getCurrentStockInWarehouse(warehouseId);
