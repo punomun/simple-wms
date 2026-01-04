@@ -10,21 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: wms_db
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: root
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
     - uses: actions/checkout@v4
 
@@ -37,7 +22,3 @@ jobs:
 
     - name: Maven build
       run: mvn -B package --file pom.xml
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/wms_db
-        SPRING_DATASOURCE_USERNAME: admin
-        SPRING_DATASOURCE_PASSWORD: root
